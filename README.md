@@ -131,10 +131,6 @@ sipolis/
 └── vendor/             # Dependencies (Composer)
 ```
 
-## 📸 Screenshot
-
-_Coming soon_
-
 ## 📝 Lisensi
 
 MIT License - BPS Kota Pekanbaru © 2026
