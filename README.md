@@ -1,68 +1,144 @@
-# CodeIgniter 4 Application Starter
+# SIPOLIS - Sistem Informasi Pojok Literasi Statistik
 
-## What is CodeIgniter?
+![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php&logoColor=white)
+![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4-EF4223?style=flat-square&logo=codeigniter&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+SIPOLIS adalah platform web untuk mendukung program literasi statistik **BPS Kota Pekanbaru**. Aplikasi ini menyediakan akses online untuk modul literasi statistik, penjadwalan konsultasi, dan tracking progress belajar.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## 🚀 Fitur Utama
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+### 🔐 Multi-Role Authentication
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+- Registrasi dan Login pengguna
+- 3 level akses: **User**, **Pengajar**, **Admin**
+- Manajemen profil dan ubah password
 
-## Installation & updates
+### 📚 Modul Literasi Statistik
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+- Download modul PDF berdasarkan kategori (Sosial, Produksi, Distribusi, Neraca)
+- Fitur pencarian dan filter modul
+- Bookmark modul favorit
+- Tracking status modul (diunduh/selesai)
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+### 📅 Jadwal Konsultasi
 
-## Setup
+- Kalender interaktif (FullCalendar.js)
+- Admin membuat jadwal konsultasi
+- Pengajar update status selesai
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+### ✅ Presensi & Daily Check-in
 
-## Important Change with index.php
+- Daily check-in dengan mood tracker
+- Streak belajar berturut-turut 🔥
+- Statistik bulanan
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+### 📊 Dashboard & Progress
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+- Dashboard khusus untuk setiap role
+- Progress belajar dengan persentase
+- Statistik modul diunduh & diselesaikan
 
-**Please** read the user guide for a better explanation of how CI4 works!
+### 🌙 Fitur Tambahan
 
-## Repository Management
+- Dark/Light mode
+- Responsive design (mobile-friendly)
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+## 🛠️ Teknologi
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+| Kategori     | Teknologi                       |
+| ------------ | ------------------------------- |
+| **Backend**  | PHP 8.x, CodeIgniter 4, MySQL   |
+| **Frontend** | HTML5, Tailwind CSS, JavaScript |
+| **Library**  | FullCalendar.js, Font Awesome   |
+| **Tools**    | Composer, Git                   |
 
-## Server Requirements
+## 📋 Instalasi
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+### Prasyarat
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+- PHP 8.1 atau lebih tinggi
+- Composer
+- MySQL
+- XAMPP / Laragon (opsional)
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+### Langkah Instalasi
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+1. **Clone repository**
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+   ```bash
+   git clone https://github.com/valll05/sipolis.git
+   cd sipolis
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   composer install
+   ```
+
+3. **Konfigurasi environment**
+
+   ```bash
+   cp env .env
+   ```
+
+   Edit file `.env` dan sesuaikan konfigurasi database:
+
+   ```
+   database.default.hostname = localhost
+   database.default.database = sipolis_db
+   database.default.username = root
+   database.default.password =
+   database.default.DBDriver = MySQLi
+   ```
+
+4. **Buat database dan jalankan migrasi**
+
+   ```bash
+   php spark migrate
+   ```
+
+5. **Jalankan aplikasi**
+
+   ```bash
+   php spark serve
+   ```
+
+6. Akses aplikasi di `http://localhost:8080`
+
+## 👥 Role & Akses
+
+| Role         | Akses                                         |
+| ------------ | --------------------------------------------- |
+| **User**     | Akses modul, download, presensi, lihat jadwal |
+| **Pengajar** | Dashboard, lihat & update status jadwal       |
+| **Admin**    | Kelola modul, user, pengajar, jadwal          |
+
+## 📁 Struktur Folder
+
+```
+sipolis/
+├── app/
+│   ├── Controllers/    # Controller aplikasi
+│   ├── Models/         # Model database
+│   ├── Views/          # Template view
+│   ├── Filters/        # Filter autentikasi
+│   └── Config/         # Konfigurasi
+├── public/             # Assets publik (CSS, JS, images)
+├── writable/           # Cache, logs, uploads
+└── vendor/             # Dependencies (Composer)
+```
+
+## 📸 Screenshot
+
+_Coming soon_
+
+## 📝 Lisensi
+
+MIT License - BPS Kota Pekanbaru © 2026
+
+## 👨‍💻 Developer
+
+Dikembangkan untuk **Pojok Literasi Statistik - BPS Kota Pekanbaru**
