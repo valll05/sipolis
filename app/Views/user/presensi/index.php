@@ -60,7 +60,7 @@
                     <i class="fas fa-check-circle"></i> Sudah Check-in
                 </h3>
                 <p class="text-gray-500 text-sm mt-1">
-                    Mood: <?= match($today_checkin['mood']) { 'great' => '😊 Great', 'neutral' => '😐 Neutral', 'bad' => '😔 Bad' } ?>
+                    Mood: <?= match($today_checkin['mood']) { 'great' => '😊 Baik', 'neutral' => '😐 Biasa', 'bad' => '😔 Buruk' } ?>
                 </p>
             </div>
             <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
@@ -103,7 +103,12 @@
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden modal-content transform scale-95 opacity-0 translate-y-8 transition-all duration-300">
         <div class="bg-gradient-to-r from-primary-dark to-primary p-4 text-white">
             <div class="flex items-center justify-between">
-                <h3 class="font-bold text-lg" id="modalTitle">Daily Check-in @ <?= date('l, M j, Y') ?></h3>
+                <?php
+                    $hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                    $tanggalHariIni = $hari[date('w')] . ', ' . date('d') . ' ' . $bulan[date('n') - 1] . ' ' . date('Y');
+                ?>
+                <h3 class="font-bold text-lg" id="modalTitle">Check-in Harian @ <?= $tanggalHariIni ?></h3>
                 <button onclick="closeCheckInModal()" class="text-white/80 hover:text-white">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -115,27 +120,27 @@
             
             <!-- Mood Selection -->
             <div class="mb-6">
-                <label class="block text-gray-700 font-medium mb-3">Your mood</label>
+                <label class="block text-gray-700 font-medium mb-3">Suasana hati</label>
                 <div class="flex gap-4">
                     <label class="flex-1 cursor-pointer">
                         <input type="radio" name="mood" value="bad" class="hidden peer" <?= ($today_checkin && $today_checkin['mood'] == 'bad') ? 'checked' : '' ?>>
                         <div class="peer-checked:ring-2 peer-checked:ring-red-500 peer-checked:bg-red-50 p-4 rounded-xl border-2 border-gray-200 text-center transition hover:border-red-300">
                             <div class="text-4xl mb-2">😔</div>
-                            <span class="text-gray-600 font-medium">Bad</span>
+                            <span class="text-gray-600 font-medium">Buruk</span>
                         </div>
                     </label>
                     <label class="flex-1 cursor-pointer">
                         <input type="radio" name="mood" value="neutral" class="hidden peer" <?= ($today_checkin && $today_checkin['mood'] == 'neutral') || !$today_checkin ? 'checked' : '' ?>>
                         <div class="peer-checked:ring-2 peer-checked:ring-yellow-500 peer-checked:bg-yellow-50 p-4 rounded-xl border-2 border-gray-200 text-center transition hover:border-yellow-300">
                             <div class="text-4xl mb-2">😐</div>
-                            <span class="text-gray-600 font-medium">Neutral</span>
+                            <span class="text-gray-600 font-medium">Biasa</span>
                         </div>
                     </label>
                     <label class="flex-1 cursor-pointer">
                         <input type="radio" name="mood" value="great" class="hidden peer" <?= ($today_checkin && $today_checkin['mood'] == 'great') ? 'checked' : '' ?>>
                         <div class="peer-checked:ring-2 peer-checked:ring-green-500 peer-checked:bg-green-50 p-4 rounded-xl border-2 border-gray-200 text-center transition hover:border-green-300">
                             <div class="text-4xl mb-2">😊</div>
-                            <span class="text-gray-600 font-medium">Great</span>
+                            <span class="text-gray-600 font-medium">Baik</span>
                         </div>
                     </label>
                 </div>
@@ -143,7 +148,7 @@
             
             <!-- Progress Notes -->
             <div class="mb-6">
-                <label class="block text-gray-700 font-medium mb-2">Your progress</label>
+                <label class="block text-gray-700 font-medium mb-2">Catatan</label>
                 <textarea name="catatan" rows="4" 
                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                           placeholder="Apa yang kamu pelajari hari ini?"><?= $today_checkin['catatan'] ?? '' ?></textarea>
@@ -153,7 +158,7 @@
             <div class="flex items-center justify-between">
                 <?php if ($today_checkin): ?>
                 <span class="text-xs px-3 py-1 bg-green-100 text-green-600 rounded-full font-medium">
-                    <i class="fas fa-check mr-1"></i> Submitted
+                    <i class="fas fa-check mr-1"></i> Terkirim
                 </span>
                 <?php else: ?>
                 <span></span>
@@ -525,6 +530,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        locale: 'id',
+        buttonText: {
+            today: 'Hari ini',
+            month: 'Bulan'
+        },
         dayMaxEvents: 2,
         fixedWeekCount: false,
         contentHeight: 600,
@@ -555,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="p-1">
                     <div class="text-xs text-gray-700 mb-1">${arg.event.title}</div>
                     <span class="text-xs px-2 py-0.5 rounded-full ${isSubmitted ? 'bg-green-100 text-green-600 border border-green-200' : 'bg-red-100 text-red-600 border border-red-200'}">
-                        ${isSubmitted ? 'Submitted' : 'Not Submitted'}
+                        ${isSubmitted ? 'Terkirim' : 'Belum Terkirim'}
                     </span>
                 </div>
             `;
@@ -573,11 +583,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(result => {
                         if (result.data) {
                             var emoji = {great: '😊', neutral: '😐', bad: '😔'};
+                            var moodText = {great: 'Baik', neutral: 'Biasa', bad: 'Buruk'};
                             document.getElementById('viewModalTitle').textContent = 'Check-in @ ' + info.dateStr;
                             document.getElementById('viewModalContent').innerHTML = `
                                 <div class="text-center mb-4">
                                     <span class="text-6xl">${emoji[result.data.mood]}</span>
-                                    <p class="text-gray-600 mt-2 capitalize font-medium">${result.data.mood}</p>
+                                    <p class="text-gray-600 mt-2 capitalize font-medium">${moodText[result.data.mood]}</p>
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <p class="text-gray-700">${result.data.catatan || 'Tidak ada catatan'}</p>
@@ -630,11 +641,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Presensi event
             var emoji = {great: '😊', neutral: '😐', bad: '😔'};
+            var moodText = {great: 'Baik', neutral: 'Biasa', bad: 'Buruk'};
             document.getElementById('viewModalTitle').textContent = 'Check-in @ ' + info.event.startStr;
             document.getElementById('viewModalContent').innerHTML = `
                 <div class="text-center mb-4">
                     <span class="text-6xl">${emoji[props.mood]}</span>
-                    <p class="text-gray-600 mt-2 capitalize font-medium">${props.mood}</p>
+                    <p class="text-gray-600 mt-2 capitalize font-medium">${moodText[props.mood]}</p>
                 </div>
                 <div class="bg-gray-50 rounded-lg p-4">
                     <p class="text-gray-700">${props.catatan || 'Tidak ada catatan'}</p>

@@ -50,8 +50,14 @@
         <!-- User Info - Fixed at bottom -->
         <div class="flex-shrink-0 p-4 bg-primary-dark border-t border-white/10">
             <div class="flex items-center space-x-3">
-                <a href="<?= base_url('profile') ?>" class="w-10 h-10 bg-accent rounded-full flex items-center justify-center flex-shrink-0 hover:ring-2 hover:ring-white/30 transition" title="Pengaturan Profil">
-                    <i class="fas fa-user"></i>
+                <a href="<?= base_url('profile') ?>" class="w-10 h-10 rounded-full flex-shrink-0 hover:ring-2 hover:ring-white/30 transition overflow-hidden" title="Pengaturan Profil">
+                    <?php if (session()->get('foto')): ?>
+                        <img src="<?= base_url('uploads/profile/' . session()->get('foto')) ?>" alt="Foto" class="w-full h-full object-cover">
+                    <?php else: ?>
+                        <div class="w-full h-full bg-accent flex items-center justify-center text-white font-bold">
+                            <?= strtoupper(substr(session()->get('nama'), 0, 1)) ?>
+                        </div>
+                    <?php endif; ?>
                 </a>
                 <a href="<?= base_url('profile') ?>" class="flex-1 min-w-0 hover:opacity-80 transition" title="Pengaturan Profil">
                     <p class="font-medium text-sm truncate"><?= session()->get('nama') ?></p>
@@ -70,7 +76,12 @@
         <header class="hidden lg:flex bg-white shadow-sm px-8 xl:px-12 2xl:px-16 py-4 items-center justify-between flex-shrink-0">
             <h1 class="text-xl font-bold text-gray-800"><?= $title ?? 'Dashboard' ?></h1>
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-500 hidden xl:block"><?= date('l, d F Y') ?></span>
+                <?php
+                    $hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                    $tanggal = $hari[date('w')] . ', ' . date('d') . ' ' . $bulan[date('n') - 1] . ' ' . date('Y');
+                ?>
+                <span class="text-sm text-gray-500 hidden xl:block"><?= $tanggal ?></span>
                 <button onclick="toggleTheme()" class="theme-toggle w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition" title="Toggle Theme">
                     <i id="themeIcon" class="fas fa-moon text-gray-600"></i>
                 </button>

@@ -100,4 +100,84 @@ class Profile extends BaseController
         
         return redirect()->to('/profile')->with('success', 'Password berhasil diubah!');
     }
+    
+    /**
+     * Update profile photo
+     */
+    public function updatePhoto()
+    {
+        $userId = session()->get('user_id');
+        $user = $this->userModel->find($userId);
+        
+        $rules = [
+            'foto' => 'uploaded[foto]|is_image[foto]|mime_in[foto,image/jpg,image/jpeg,image/png,image/gif]|max_size[foto,2048]',
+        ];
+        
+        $messages = [
+            'foto' => [
+                'uploaded'  => 'Pilih foto untuk diupload.',
+                'is_image'  => 'File harus berupa gambar.',
+                'mime_in'   => 'Format foto harus JPG, JPEG, PNG, atau GIF.',
+                'max_size'  => 'Ukuran foto maksimal 2 MB.',
+            ],
+        ];
+        
+        if (!$this->validate($rules, $messages)) {
+            return redirect()->back()->with('errors', $this->validator->getErrors());
+        }
+        
+        $file = $this->request->getFile('foto');
+        
+        // Delete old photo if exists
+        if ($user['foto']) {
+            $oldFile = ROOTPATH . 'public/uploads/profile/' . $user['foto'];
+            if (file_exists($oldFile)) {
+                unlink($oldFile);
+            }
+        }
+        
+        // Create directory if not exists
+        $uploadPath = ROOTPATH . 'public/uploads/profile';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+        
+        // Save new photo
+        $fileName = $userId . '_' . $file->getRandomName();
+        $file->move($uploadPath, $fileName);
+        
+        // Update database
+        $this->userModel->skipValidation(true);
+        $this->userModel->update($userId, ['foto' => $fileName]);
+        
+        // Update session
+        session()->set('foto', $fileName);
+        
+        return redirect()->to('/profile')->with('success', 'Foto profil berhasil diperbarui!');
+    }
+    
+    /**
+     * Delete profile photo
+     */
+    public function deletePhoto()
+    {
+        $userId = session()->get('user_id');
+        $user = $this->userModel->find($userId);
+        
+        if ($user['foto']) {
+            $filePath = ROOTPATH . 'public/uploads/profile/' . $user['foto'];
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            
+            $this->userModel->skipValidation(true);
+            $this->userModel->update($userId, ['foto' => null]);
+            
+            session()->remove('foto');
+            
+            return redirect()->to('/profile')->with('success', 'Foto profil berhasil dihapus!');
+        }
+        
+        return redirect()->to('/profile')->with('error', 'Tidak ada foto untuk dihapus.');
+    }
 }

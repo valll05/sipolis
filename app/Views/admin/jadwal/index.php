@@ -222,6 +222,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        locale: 'id',
+        buttonText: {
+            today: 'Hari ini',
+            month: 'Bulan',
+            week: 'Minggu'
+        },
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',

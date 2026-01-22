@@ -79,4 +79,6 @@ $routes->group('profile', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'Profile::index');
     $routes->post('update', 'Profile::update');
     $routes->post('password', 'Profile::changePassword');
+    $routes->post('photo', 'Profile::updatePhoto');
+    $routes->get('photo/delete', 'Profile::deletePhoto');
 });

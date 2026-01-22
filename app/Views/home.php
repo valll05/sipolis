@@ -18,12 +18,40 @@
                 <a href="#modul" class="text-gray-700 hover:text-primary-dark font-medium">Modul</a>
                 
                 <?php if (session()->get('logged_in')): ?>
-                    <?php $dashboardUrl = session()->get('role') === 'pengajar' ? 'pengajar/dashboard' : 'user/dashboard'; ?>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-gray-600 text-sm hidden lg:block">Halo, <strong><?= session()->get('nama') ?></strong></span>
-                        <a href="<?= base_url($dashboardUrl) ?>" class="bg-accent hover:bg-accent-hover text-white px-4 lg:px-6 py-2 rounded-full font-semibold transition-all">
-                            <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
-                        </a>
+                    <?php $dashboardUrl = session()->get('role') === 'pengajar' ? 'pengajar/dashboard' : (session()->get('role') === 'admin' ? 'admin/dashboard' : 'user/dashboard'); ?>
+                    <!-- Profile Dropdown -->
+                    <div class="relative" id="profileDropdown">
+                        <button onclick="toggleProfileDropdown()" class="w-10 h-10 rounded-full overflow-hidden border-2 border-accent/30 hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent/50 transition">
+                            <?php if (session()->get('foto')): ?>
+                                <img src="<?= base_url('uploads/profile/' . session()->get('foto')) ?>" alt="Foto" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <div class="w-full h-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-white font-bold">
+                                    <?= strtoupper(substr(session()->get('nama'), 0, 1)) ?>
+                                </div>
+                            <?php endif; ?>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-2 z-50">
+                            <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                <p class="font-medium text-gray-800 dark:text-white truncate"><?= session()->get('nama') ?></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 capitalize"><?= session()->get('role') ?></p>
+                            </div>
+                            <a href="<?= base_url($dashboardUrl) ?>" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                <i class="fas fa-tachometer-alt w-5 text-accent"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="<?= base_url('profile') ?>" class="flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                <i class="fas fa-cog w-5 text-accent"></i>
+                                <span>Pengaturan</span>
+                            </a>
+                            <div class="border-t border-gray-100 dark:border-gray-700 mt-1 pt-1">
+                                <a href="<?= base_url('auth/logout') ?>" class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition">
+                                    <i class="fas fa-sign-out-alt w-5"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 <?php else: ?>
                     <a href="<?= base_url('auth/login') ?>" class="border-2 border-accent text-accent hover:bg-accent hover:text-white px-6 py-2 rounded-full font-semibold transition-all">Login</a>
@@ -51,13 +79,30 @@
             <div class="py-4 space-y-3">
                 <a href="#modul" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium">Modul</a>
                 <?php if (session()->get('logged_in')): ?>
-                    <?php $dashboardUrl = session()->get('role') === 'pengajar' ? 'pengajar/dashboard' : 'user/dashboard'; ?>
-                    <div class="px-4 py-2 text-gray-600 text-sm">Halo, <strong><?= session()->get('nama') ?></strong></div>
-                    <a href="<?= base_url($dashboardUrl) ?>" class="block mx-4 bg-accent hover:bg-accent-hover text-white px-4 py-2 rounded-lg font-semibold text-center">
-                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                    <?php $dashboardUrl = session()->get('role') === 'pengajar' ? 'pengajar/dashboard' : (session()->get('role') === 'admin' ? 'admin/dashboard' : 'user/dashboard'); ?>
+                    <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
+                        <div class="w-10 h-10 rounded-full overflow-hidden">
+                            <?php if (session()->get('foto')): ?>
+                                <img src="<?= base_url('uploads/profile/' . session()->get('foto')) ?>" alt="Foto" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <div class="w-full h-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-white font-bold">
+                                    <?= strtoupper(substr(session()->get('nama'), 0, 1)) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-800"><?= session()->get('nama') ?></p>
+                            <p class="text-xs text-gray-500 capitalize"><?= session()->get('role') ?></p>
+                        </div>
+                    </div>
+                    <a href="<?= base_url($dashboardUrl) ?>" class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-tachometer-alt w-5 text-accent"></i>Dashboard
                     </a>
-                    <a href="<?= base_url('auth/logout') ?>" class="block mx-4 text-red-500 px-4 py-2 text-center">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    <a href="<?= base_url('profile') ?>" class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-cog w-5 text-accent"></i>Pengaturan
+                    </a>
+                    <a href="<?= base_url('auth/logout') ?>" class="flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-red-50">
+                        <i class="fas fa-sign-out-alt w-5"></i>Logout
                     </a>
                 <?php else: ?>
                     <a href="<?= base_url('auth/login') ?>" class="block mx-4 border-2 border-accent text-accent hover:bg-accent hover:text-white px-4 py-2 rounded-lg font-semibold text-center">Login</a>
@@ -81,6 +126,20 @@ function toggleMobileMenu() {
         icon.className = 'fas fa-bars text-gray-700';
     }
 }
+
+function toggleProfileDropdown() {
+    const menu = document.getElementById('profileMenu');
+    menu.classList.toggle('hidden');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('profileDropdown');
+    const menu = document.getElementById('profileMenu');
+    if (dropdown && menu && !dropdown.contains(e.target)) {
+        menu.classList.add('hidden');
+    }
+});
 
 // Update mobile theme icons
 const origUpdateThemeIcon = window.updateThemeIcon;
@@ -262,19 +321,13 @@ window.updateThemeIcon = function() {
 <!-- Footer -->
 <footer class="bg-primary-dark text-white py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
+        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
+            <!-- Info BPS + Kontak -->
+            <div class="flex-1">
                 <div class="flex items-center space-x-3 mb-4">
                     <img src="<?= base_url('logo-bps.png') ?>" alt="Logo BPS" class="h-12 w-12 bg-white rounded-full p-1">
                     <span class="font-bold text-lg">BPS Kota Pekanbaru</span>
                 </div>
-                <p class="text-white/70 text-sm">
-                    Menyediakan data statistik yang berkualitas untuk mendukung pembangunan daerah.
-                </p>
-            </div>
-            
-            <div>
-                <h4 class="font-semibold text-lg mb-4">Kontak</h4>
                 <ul class="space-y-2 text-white/70 text-sm">
                     <li><i class="fas fa-map-marker-alt mr-2"></i>Jl. Rawa Indah Pekanbaru, Riau 28125</li>
                     <li><i class="fas fa-phone mr-2"></i>(0761) 7874567</li>
@@ -282,9 +335,10 @@ window.updateThemeIcon = function() {
                 </ul>
             </div>
             
-            <div>
+            <!-- Ikuti Kami -->
+            <div class="md:text-right">
                 <h4 class="font-semibold text-lg mb-4">Ikuti Kami</h4>
-                <div class="flex gap-3">
+                <div class="flex gap-3 md:justify-end">
                     <a href="https://www.facebook.com/profile.php?id=100072273431504" target="_blank" class="w-10 h-10 bg-white/10 hover:bg-accent rounded-full flex items-center justify-center transition">
                         <i class="fab fa-facebook-f"></i>
                     </a>

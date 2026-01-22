@@ -44,6 +44,11 @@
     </script>
     
     <style>
+        /* Smooth scroll for anchor links */
+        html {
+            scroll-behavior: smooth;
+        }
+        
         .sidebar-link.active {
             background-color: #054d6d;
             color: white;
@@ -186,6 +191,7 @@
     
     <!-- FullCalendar JS -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/locales/id.global.min.js'></script>
     
     <?= $this->renderSection('scripts') ?>
 </body>

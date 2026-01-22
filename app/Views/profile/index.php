@@ -57,16 +57,50 @@ $baseUrl = $role === 'admin' ? 'admin' : ($role === 'pengajar' ? 'pengajar' : 'u
     
     <!-- Profile Info Card -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
-        <div class="flex items-center gap-4 mb-6">
-            <div class="w-20 h-20 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                <?= strtoupper(substr($user['nama'], 0, 1)) ?>
+        <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
+            <!-- Photo Upload Section -->
+            <div class="relative group">
+                <?php if ($user['foto']): ?>
+                    <img src="<?= base_url('uploads/profile/' . $user['foto']) ?>" 
+                         alt="Foto Profil" 
+                         class="w-24 h-24 rounded-full object-cover border-4 border-accent/20">
+                <?php else: ?>
+                    <div class="w-24 h-24 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-accent/20">
+                        <?= strtoupper(substr($user['nama'], 0, 1)) ?>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Overlay for upload -->
+                <label for="fotoInput" class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                    <i class="fas fa-camera text-white text-xl"></i>
+                </label>
             </div>
-            <div>
+            
+            <div class="text-center sm:text-left flex-1">
                 <h3 class="text-xl font-semibold text-gray-800 dark:text-white"><?= $user['nama'] ?></h3>
                 <p class="text-gray-500 dark:text-gray-400"><?= $user['email'] ?></p>
                 <span class="inline-block mt-1 px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent capitalize">
                     <?= $user['role'] ?>
                 </span>
+                
+                <!-- Photo Actions -->
+                <div class="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <form id="photoForm" action="<?= base_url('profile/photo') ?>" method="POST" enctype="multipart/form-data" class="inline">
+                        <?= csrf_field() ?>
+                        <input type="file" name="foto" id="fotoInput" accept="image/*" class="hidden" onchange="previewAndSubmit(this)">
+                        <label for="fotoInput" class="inline-flex items-center px-3 py-1.5 bg-accent hover:bg-accent-hover text-white text-sm rounded-lg cursor-pointer transition">
+                            <i class="fas fa-upload mr-1.5"></i>Upload Foto
+                        </label>
+                    </form>
+                    <?php if ($user['foto']): ?>
+                    <button type="button" 
+                       onclick="confirmDelete('<?= base_url('profile/photo/delete') ?>', 'Yakin ingin menghapus foto profil?', 'Hapus Foto')"
+                       class="inline-flex items-center px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm rounded-lg transition">
+                        <i class="fas fa-trash mr-1.5"></i>Hapus
+                    </button>
+                    <?php endif; ?>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Format: JPG, PNG, GIF. Maks 2MB</p>
             </div>
         </div>
         
@@ -198,6 +232,20 @@ function togglePassword(inputId, btn) {
         input.type = 'password';
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
+    }
+}
+
+function previewAndSubmit(input) {
+    if (input.files && input.files[0]) {
+        // Validate file size (2MB max)
+        if (input.files[0].size > 2 * 1024 * 1024) {
+            alert('Ukuran file maksimal 2 MB');
+            input.value = '';
+            return;
+        }
+        
+        // Submit the form
+        document.getElementById('photoForm').submit();
     }
 }
 </script>

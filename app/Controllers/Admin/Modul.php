@@ -45,7 +45,23 @@ class Modul extends BaseController
             'file_pdf' => 'uploaded[file_pdf]|mime_in[file_pdf,application/pdf]|max_size[file_pdf,10240]',
         ];
         
-        if (!$this->validate($rules)) {
+        $messages = [
+            'file_pdf' => [
+                'uploaded'  => 'File PDF wajib diupload.',
+                'mime_in'   => 'File yang diupload harus berformat PDF.',
+                'max_size'  => 'Ukuran file PDF maksimal 10 MB.',
+            ],
+            'judul' => [
+                'required'   => 'Judul modul wajib diisi.',
+                'min_length' => 'Judul modul minimal 3 karakter.',
+            ],
+            'kategori' => [
+                'required' => 'Kategori wajib dipilih.',
+                'in_list'  => 'Kategori tidak valid.',
+            ],
+        ];
+        
+        if (!$this->validate($rules, $messages)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
         
@@ -99,13 +115,28 @@ class Modul extends BaseController
             'kategori' => 'required|in_list[sosial,produksi,distribusi,neraca]',
         ];
         
+        $messages = [
+            'file_pdf' => [
+                'mime_in'   => 'File yang diupload harus berformat PDF.',
+                'max_size'  => 'Ukuran file PDF maksimal 10 MB.',
+            ],
+            'judul' => [
+                'required'   => 'Judul modul wajib diisi.',
+                'min_length' => 'Judul modul minimal 3 karakter.',
+            ],
+            'kategori' => [
+                'required' => 'Kategori wajib dipilih.',
+                'in_list'  => 'Kategori tidak valid.',
+            ],
+        ];
+        
         // Only validate file if uploaded
         $file = $this->request->getFile('file_pdf');
         if ($file && $file->isValid()) {
             $rules['file_pdf'] = 'mime_in[file_pdf,application/pdf]|max_size[file_pdf,10240]';
         }
         
-        if (!$this->validate($rules)) {
+        if (!$this->validate($rules, $messages)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
         

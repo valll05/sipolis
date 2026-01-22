@@ -18,7 +18,8 @@ class UserModel extends Model
         'password',
         'program_studi',
         'universitas',
-        'role'
+        'role',
+        'foto'
     ];
 
     // Dates
